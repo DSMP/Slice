@@ -12,7 +12,7 @@ class ChatServerI : virtual public ChatServer
 private:
 	Users userList;
 	Groups chats;
-	std::vector<Chat::GroupServerManagerPrx> managerServers;
+	Managers servers;
 public:
 
     virtual ::Chat::UserPrx LogIn(const ::std::string&,
@@ -49,7 +49,7 @@ private:
 	std::vector<std::string> textInChat;
 	int id;
 	std::string id_Name_Text;
-
+	bool wasAnyUser;
 	std::string chatName;
 public:
 
@@ -68,6 +68,8 @@ public:
     virtual ::Chat::Users UserList(const Ice::Current&);
 
     virtual ::std::string Name(const Ice::Current&);
+
+    virtual bool getWasAnyUser(const Ice::Current&);
 };
 
 class GroupServerManagerI : virtual public GroupServerManager

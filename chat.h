@@ -217,6 +217,8 @@ protected:
     using ::Ice::UserException::__readImpl;
 };
 
+typedef ::std::vector< ::Chat::GroupServerManagerPrx> Managers;
+
 typedef ::std::vector< ::Chat::GroupServerPrx> Groups;
 
 typedef ::std::vector< ::Chat::UserPrx> Users;
@@ -307,6 +309,9 @@ typedef ::IceUtil::Handle< Callback_GroupServer_UserList_Base> Callback_GroupSer
 
 class Callback_GroupServer_Name_Base : virtual public ::IceInternal::CallbackBase { };
 typedef ::IceUtil::Handle< Callback_GroupServer_Name_Base> Callback_GroupServer_NamePtr;
+
+class Callback_GroupServer_getWasAnyUser_Base : virtual public ::IceInternal::CallbackBase { };
+typedef ::IceUtil::Handle< Callback_GroupServer_getWasAnyUser_Base> Callback_GroupServer_getWasAnyUserPtr;
 
 class Callback_GroupServerManager_CreateGroup_Base : virtual public ::IceInternal::CallbackBase { };
 typedef ::IceUtil::Handle< Callback_GroupServerManager_CreateGroup_Base> Callback_GroupServerManager_CreateGroupPtr;
@@ -1519,6 +1524,82 @@ private:
     ::Ice::AsyncResultPtr begin_Name(const ::Ice::Context*, const ::IceInternal::CallbackBasePtr&, const ::Ice::LocalObjectPtr& __cookie = 0);
     
 public:
+
+    bool getWasAnyUser()
+    {
+        return getWasAnyUser(0);
+    }
+    bool getWasAnyUser(const ::Ice::Context& __ctx)
+    {
+        return getWasAnyUser(&__ctx);
+    }
+#ifdef ICE_CPP11
+    ::Ice::AsyncResultPtr
+    begin_getWasAnyUser(const ::IceInternal::Function<void (bool)>& __response, const ::IceInternal::Function<void (const ::Ice::Exception&)>& __exception = ::IceInternal::Function<void (const ::Ice::Exception&)>(), const ::IceInternal::Function<void (bool)>& __sent = ::IceInternal::Function<void (bool)>())
+    {
+        return __begin_getWasAnyUser(0, __response, __exception, __sent);
+    }
+    ::Ice::AsyncResultPtr
+    begin_getWasAnyUser(const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __completed, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __sent = ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>())
+    {
+        return begin_getWasAnyUser(0, ::Ice::newCallback(__completed, __sent), 0);
+    }
+    ::Ice::AsyncResultPtr
+    begin_getWasAnyUser(const ::Ice::Context& __ctx, const ::IceInternal::Function<void (bool)>& __response, const ::IceInternal::Function<void (const ::Ice::Exception&)>& __exception = ::IceInternal::Function<void (const ::Ice::Exception&)>(), const ::IceInternal::Function<void (bool)>& __sent = ::IceInternal::Function<void (bool)>())
+    {
+        return __begin_getWasAnyUser(&__ctx, __response, __exception, __sent);
+    }
+    ::Ice::AsyncResultPtr
+    begin_getWasAnyUser(const ::Ice::Context& __ctx, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __completed, const ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>& __sent = ::IceInternal::Function<void (const ::Ice::AsyncResultPtr&)>())
+    {
+        return begin_getWasAnyUser(&__ctx, ::Ice::newCallback(__completed, __sent));
+    }
+    
+private:
+
+    ::Ice::AsyncResultPtr __begin_getWasAnyUser(const ::Ice::Context* __ctx, const ::IceInternal::Function<void (bool)>& __response, const ::IceInternal::Function<void (const ::Ice::Exception&)>& __exception, const ::IceInternal::Function<void (bool)>& __sent);
+    
+public:
+#endif
+
+    ::Ice::AsyncResultPtr begin_getWasAnyUser()
+    {
+        return begin_getWasAnyUser(0, ::IceInternal::__dummyCallback, 0);
+    }
+
+    ::Ice::AsyncResultPtr begin_getWasAnyUser(const ::Ice::Context& __ctx)
+    {
+        return begin_getWasAnyUser(&__ctx, ::IceInternal::__dummyCallback, 0);
+    }
+
+    ::Ice::AsyncResultPtr begin_getWasAnyUser(const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    {
+        return begin_getWasAnyUser(0, __del, __cookie);
+    }
+
+    ::Ice::AsyncResultPtr begin_getWasAnyUser(const ::Ice::Context& __ctx, const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    {
+        return begin_getWasAnyUser(&__ctx, __del, __cookie);
+    }
+
+    ::Ice::AsyncResultPtr begin_getWasAnyUser(const ::Chat::Callback_GroupServer_getWasAnyUserPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    {
+        return begin_getWasAnyUser(0, __del, __cookie);
+    }
+
+    ::Ice::AsyncResultPtr begin_getWasAnyUser(const ::Ice::Context& __ctx, const ::Chat::Callback_GroupServer_getWasAnyUserPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    {
+        return begin_getWasAnyUser(&__ctx, __del, __cookie);
+    }
+
+    bool end_getWasAnyUser(const ::Ice::AsyncResultPtr&);
+    
+private:
+
+    bool getWasAnyUser(const ::Ice::Context*);
+    ::Ice::AsyncResultPtr begin_getWasAnyUser(const ::Ice::Context*, const ::IceInternal::CallbackBasePtr&, const ::Ice::LocalObjectPtr& __cookie = 0);
+    
+public:
     
     ::IceInternal::ProxyHandle<GroupServer> ice_context(const ::Ice::Context& __context) const
     {
@@ -2624,6 +2705,9 @@ public:
 
     virtual ::std::string Name(const ::Ice::Current& = ::Ice::Current()) = 0;
     ::Ice::DispatchStatus ___Name(::IceInternal::Incoming&, const ::Ice::Current&);
+
+    virtual bool getWasAnyUser(const ::Ice::Current& = ::Ice::Current()) = 0;
+    ::Ice::DispatchStatus ___getWasAnyUser(::IceInternal::Incoming&, const ::Ice::Current&);
 
     virtual ::Ice::DispatchStatus __dispatch(::IceInternal::Incoming&, const ::Ice::Current&);
 
@@ -4324,6 +4408,110 @@ template<class T, typename CT> Callback_GroupServer_NamePtr
 newCallback_GroupServer_Name(T* instance, void (T::*cb)(const ::std::string&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_GroupServer_Name<T, CT>(instance, cb, excb, sentcb);
+}
+
+template<class T>
+class CallbackNC_GroupServer_getWasAnyUser : public Callback_GroupServer_getWasAnyUser_Base, public ::IceInternal::TwowayCallbackNC<T>
+{
+public:
+
+    typedef IceUtil::Handle<T> TPtr;
+
+    typedef void (T::*Exception)(const ::Ice::Exception&);
+    typedef void (T::*Sent)(bool);
+    typedef void (T::*Response)(bool);
+
+    CallbackNC_GroupServer_getWasAnyUser(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
+        : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
+    {
+    }
+
+    virtual void completed(const ::Ice::AsyncResultPtr& __result) const
+    {
+        ::Chat::GroupServerPrx __proxy = ::Chat::GroupServerPrx::uncheckedCast(__result->getProxy());
+        bool __ret;
+        try
+        {
+            __ret = __proxy->end_getWasAnyUser(__result);
+        }
+        catch(const ::Ice::Exception& ex)
+        {
+            ::IceInternal::CallbackNC<T>::exception(__result, ex);
+            return;
+        }
+        if(_response)
+        {
+            (::IceInternal::CallbackNC<T>::_callback.get()->*_response)(__ret);
+        }
+    }
+
+    private:
+
+    Response _response;
+};
+
+template<class T> Callback_GroupServer_getWasAnyUserPtr
+newCallback_GroupServer_getWasAnyUser(const IceUtil::Handle<T>& instance, void (T::*cb)(bool), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+{
+    return new CallbackNC_GroupServer_getWasAnyUser<T>(instance, cb, excb, sentcb);
+}
+
+template<class T> Callback_GroupServer_getWasAnyUserPtr
+newCallback_GroupServer_getWasAnyUser(T* instance, void (T::*cb)(bool), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+{
+    return new CallbackNC_GroupServer_getWasAnyUser<T>(instance, cb, excb, sentcb);
+}
+
+template<class T, typename CT>
+class Callback_GroupServer_getWasAnyUser : public Callback_GroupServer_getWasAnyUser_Base, public ::IceInternal::TwowayCallback<T, CT>
+{
+public:
+
+    typedef IceUtil::Handle<T> TPtr;
+
+    typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
+    typedef void (T::*Sent)(bool , const CT&);
+    typedef void (T::*Response)(bool, const CT&);
+
+    Callback_GroupServer_getWasAnyUser(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
+        : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
+    {
+    }
+
+    virtual void completed(const ::Ice::AsyncResultPtr& __result) const
+    {
+        ::Chat::GroupServerPrx __proxy = ::Chat::GroupServerPrx::uncheckedCast(__result->getProxy());
+        bool __ret;
+        try
+        {
+            __ret = __proxy->end_getWasAnyUser(__result);
+        }
+        catch(const ::Ice::Exception& ex)
+        {
+            ::IceInternal::Callback<T, CT>::exception(__result, ex);
+            return;
+        }
+        if(_response)
+        {
+            (::IceInternal::Callback<T, CT>::_callback.get()->*_response)(__ret, CT::dynamicCast(__result->getCookie()));
+        }
+    }
+
+    private:
+
+    Response _response;
+};
+
+template<class T, typename CT> Callback_GroupServer_getWasAnyUserPtr
+newCallback_GroupServer_getWasAnyUser(const IceUtil::Handle<T>& instance, void (T::*cb)(bool, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+{
+    return new Callback_GroupServer_getWasAnyUser<T, CT>(instance, cb, excb, sentcb);
+}
+
+template<class T, typename CT> Callback_GroupServer_getWasAnyUserPtr
+newCallback_GroupServer_getWasAnyUser(T* instance, void (T::*cb)(bool, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+{
+    return new Callback_GroupServer_getWasAnyUser<T, CT>(instance, cb, excb, sentcb);
 }
 
 template<class T>

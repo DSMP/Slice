@@ -11,6 +11,7 @@ exception ServerDoesNotExist{};
 exception UserAlreadyRegistered{};
 exception UserDoesNotExist{};
 
+sequence<GroupServerManager*> Managers;
 sequence<GroupServer*> Groups;
 sequence<User*> Users; 
 
@@ -33,6 +34,7 @@ interface GroupServer {
 	void SendMessage(string message, User* sender) throws UserDoesNotExist;
 	Users UserList();
 	string Name();
+	bool getWasAnyUser();
 };
 
 interface GroupServerManager {

@@ -84,17 +84,17 @@ void
 Chat::ChatServerI::registerServer(const ::Chat::GroupServerManagerPrx& serverManager,
                                   const Ice::Current& current)
 {
-	managerServers.push_back(serverManager);
+	servers.push_back(serverManager);
 }
 
 void
 Chat::ChatServerI::unregisterServer(const ::Chat::GroupServerManagerPrx& serverManager,
                                     const Ice::Current& current)
 {
-	for(int i=0;i<managerServers.size();i++){
-		if(managerServers[i] == serverManager)
+	for(int i=0;i<servers.size();i++){
+		if(servers[i] == serverManager)
 		{
-			managerServers.erase(managerServers.begin()+i); // mysle ze ok, sprawdzic czy dobry lement usuwa +-1
+			servers.erase(servers.begin()+i); // mysle ze ok, sprawdzic czy dobry lement usuwa +-1
 		}
 	}
 }
@@ -110,7 +110,7 @@ Chat::ChatServerI::LeaveChat(const ::Chat::UserPrx& sender, const Ice::Current&)
 	}
 }
 
-Chat::GroupServerI::GroupServerI(const std::string& name) : id(0)
+Chat::GroupServerI::GroupServerI(const std::string& name) : id(0), wasAnyUser(false)
 {
 	 chatName = name;
 	 id_Name_Text = "";
@@ -139,6 +139,8 @@ Chat::GroupServerI::Leave(const ::Chat::UserPrx& who,
 			std::cout << who->getName() << std::endl;
 		}
 	}
+	if(usersInGroup.size() == 0)
+		wasAnyUser = true;
 }
 
 void
@@ -166,6 +168,11 @@ Chat::GroupServerI::Name(const Ice::Current& current)
     return chatName;
 }
 
+bool
+Chat::GroupServerI::getWasAnyUser(const Ice::Current& current)
+{
+	return this->wasAnyUser;
+}
 Chat::GroupServerManagerI::GroupServerManagerI(const std::string& name) : managerName(name)
 {
 
@@ -175,11 +182,20 @@ Chat::GroupServerManagerI::GroupServerManagerI(const std::string& name) : manage
 Chat::GroupServerManagerI::CreateGroup(const ::std::string& name, // tu jest cos pomieszane, tworzymy grupe ale zwracamy cala liste grup. Chyba wiem!: tworzy jeden cat i go zwraca
                                        const Ice::Current& current)
 {
+	for(int i=0;i<groupsInManager.size();i++)
+	{
+		if (groupsInManager[i]->getWasAnyUser())
+		{
+			this->DeleteGroup(groupsInManager[i]->Name(),current);
+		}
+	}
 	if(this->getGroupServerByName(name, current) == 0)
 	{
 		GroupServerPtr servant = new GroupServerI(name);
 		Chat::GroupServerPrx newGroup = GroupServerPrx::uncheckedCast(current.adapter->addWithUUID(servant));
 		groupsInManager.push_back(newGroup);
+		if(groupsInManager.size() >= 10)
+			std::cout << "maks czatow" << std::endl;
 		return newGroup;
 	}else
 	{
