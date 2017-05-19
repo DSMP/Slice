@@ -59,6 +59,8 @@ const ::std::string __Chat__ChatServer__registerServer_name = "registerServer";
 
 const ::std::string __Chat__ChatServer__unregisterServer_name = "unregisterServer";
 
+const ::std::string __Chat__ChatServer__LeaveChat_name = "LeaveChat";
+
 const ::std::string __Chat__GroupServer__join_name = "join";
 
 const ::std::string __Chat__GroupServer__Leave_name = "Leave";
@@ -1315,6 +1317,48 @@ IceProxy::Chat::ChatServer::end_unregisterServer(const ::Ice::AsyncResultPtr& __
         }
     }
     __result->__readEmptyParams();
+}
+
+void
+IceProxy::Chat::ChatServer::LeaveChat(const ::Chat::UserPrx& __p_sender, const ::Ice::Context* __ctx)
+{
+    ::IceInternal::Outgoing __og(this, __Chat__ChatServer__LeaveChat_name, ::Ice::Normal, __ctx);
+    try
+    {
+        ::IceInternal::BasicStream* __os = __og.startWriteParams(::Ice::DefaultFormat);
+        __os->write(__p_sender);
+        __og.endWriteParams();
+    }
+    catch(const ::Ice::LocalException& __ex)
+    {
+        __og.abort(__ex);
+    }
+    __invoke(__og);
+}
+
+::Ice::AsyncResultPtr
+IceProxy::Chat::ChatServer::begin_LeaveChat(const ::Chat::UserPrx& __p_sender, const ::Ice::Context* __ctx, const ::IceInternal::CallbackBasePtr& __del, const ::Ice::LocalObjectPtr& __cookie)
+{
+    ::IceInternal::OutgoingAsyncPtr __result = new ::IceInternal::OutgoingAsync(this, __Chat__ChatServer__LeaveChat_name, __del, __cookie);
+    try
+    {
+        __result->prepare(__Chat__ChatServer__LeaveChat_name, ::Ice::Normal, __ctx);
+        ::IceInternal::BasicStream* __os = __result->startWriteParams(::Ice::DefaultFormat);
+        __os->write(__p_sender);
+        __result->endWriteParams();
+        __result->invoke();
+    }
+    catch(const ::Ice::Exception& __ex)
+    {
+        __result->abort(__ex);
+    }
+    return __result;
+}
+
+void
+IceProxy::Chat::ChatServer::end_LeaveChat(const ::Ice::AsyncResultPtr& __result)
+{
+    __end(__result, __Chat__ChatServer__LeaveChat_name);
 }
 
 const ::std::string&
@@ -3068,6 +3112,19 @@ Chat::ChatServer::___unregisterServer(::IceInternal::Incoming& __inS, const ::Ic
     return ::Ice::DispatchUserException;
 }
 
+::Ice::DispatchStatus
+Chat::ChatServer::___LeaveChat(::IceInternal::Incoming& __inS, const ::Ice::Current& __current)
+{
+    __checkMode(::Ice::Normal, __current.mode);
+    ::IceInternal::BasicStream* __is = __inS.startReadParams();
+    ::Chat::UserPrx __p_sender;
+    __is->read(__p_sender);
+    __inS.endReadParams();
+    LeaveChat(__p_sender, __current);
+    __inS.__writeEmptyParams();
+    return ::Ice::DispatchOK;
+}
+
 namespace
 {
 const ::std::string __Chat__ChatServer_all[] =
@@ -3075,6 +3132,7 @@ const ::std::string __Chat__ChatServer_all[] =
     "CreateGroup",
     "DeleteGroup",
     "GroupList",
+    "LeaveChat",
     "LogIn",
     "getGroupServerByName",
     "getUserByName",
@@ -3091,7 +3149,7 @@ const ::std::string __Chat__ChatServer_all[] =
 ::Ice::DispatchStatus
 Chat::ChatServer::__dispatch(::IceInternal::Incoming& in, const ::Ice::Current& current)
 {
-    ::std::pair< const ::std::string*, const ::std::string*> r = ::std::equal_range(__Chat__ChatServer_all, __Chat__ChatServer_all + 12, current.operation);
+    ::std::pair< const ::std::string*, const ::std::string*> r = ::std::equal_range(__Chat__ChatServer_all, __Chat__ChatServer_all + 13, current.operation);
     if(r.first == r.second)
     {
         throw ::Ice::OperationNotExistException(__FILE__, __LINE__, current.id, current.facet, current.operation);
@@ -3113,37 +3171,41 @@ Chat::ChatServer::__dispatch(::IceInternal::Incoming& in, const ::Ice::Current& 
         }
         case 3:
         {
-            return ___LogIn(in, current);
+            return ___LeaveChat(in, current);
         }
         case 4:
         {
-            return ___getGroupServerByName(in, current);
+            return ___LogIn(in, current);
         }
         case 5:
         {
-            return ___getUserByName(in, current);
+            return ___getGroupServerByName(in, current);
         }
         case 6:
         {
-            return ___ice_id(in, current);
+            return ___getUserByName(in, current);
         }
         case 7:
         {
-            return ___ice_ids(in, current);
+            return ___ice_id(in, current);
         }
         case 8:
         {
-            return ___ice_isA(in, current);
+            return ___ice_ids(in, current);
         }
         case 9:
         {
-            return ___ice_ping(in, current);
+            return ___ice_isA(in, current);
         }
         case 10:
         {
-            return ___registerServer(in, current);
+            return ___ice_ping(in, current);
         }
         case 11:
+        {
+            return ___registerServer(in, current);
+        }
+        case 12:
         {
             return ___unregisterServer(in, current);
         }

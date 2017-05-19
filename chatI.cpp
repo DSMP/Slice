@@ -5,26 +5,38 @@
 Chat::ChatServerI::LogIn(const ::std::string& name,
                          const Ice::Current& current)
 {
-    	std::cout << "User: " << name << " login/created!" << std::endl;
-	UserPtr servant = new UserI(name);
-    Chat::UserPrx user = UserPrx::uncheckedCast(current.adapter->addWithUUID(servant));
-    userList.push_back(user);
-    std::cout << "Users on Server:" << std::endl;
-	for(int i=0;i<userList.size();i++){
-		std::cout << userList[i]->getName() << std::endl;
+	UserPrx testUser = this->getUserByName(name,current);
+	if(testUser == 0)
+	{
+		std::cout << "User: " << name << " login/created!" << std::endl;
+		UserPtr servant = new UserI(name);
+		Chat::UserPrx user = UserPrx::uncheckedCast(current.adapter->addWithUUID(servant));
+		userList.push_back(user);
+		std::cout << "Users on Server:" << std::endl;
+		for(int i=0;i<userList.size();i++){
+			std::cout << userList[i]->getName() << std::endl;
+		}
+		return user;
+	}else
+	{
+		throw NameAlreadyExists();
 	}
-	return user;
 }
 
 ::Chat::UserPrx
 Chat::ChatServerI::getUserByName(const ::std::string& name,
                                  const Ice::Current& current)
 {
-	for(int i=0;i<userList.size();i++){
-		if(userList[i]->getName() == name)
-		{
-			return userList[i]; // mysle ze ok
+	try
+	{
+		for(int i=0;i<userList.size();i++){
+			if(userList[i]->getName() == name)
+			{
+				return userList[i]; // mysle ze ok
+			}
 		}
+	}catch (IceUtil::NullHandleException e) {
+		std::cout << "pomylka usera, nie ma takiego usera" << std::endl;
 	}
     return 0;
 }
@@ -87,7 +99,18 @@ Chat::ChatServerI::unregisterServer(const ::Chat::GroupServerManagerPrx& serverM
 	}
 }
 
-Chat::GroupServerI::GroupServerI(const std::string& name)
+void
+Chat::ChatServerI::LeaveChat(const ::Chat::UserPrx& sender, const Ice::Current&)
+{
+	for(int i=0;i<userList.size();i++){
+		if(userList[i]->getName() == sender->getName())
+		{
+			userList.erase(userList.begin()+i); // mysle ze ok, sprawdzic czy dobry lement usuwa +-1
+		}
+	}
+}
+
+Chat::GroupServerI::GroupServerI(const std::string& name) : id(0)
 {
 	 chatName = name;
 	 id_Name_Text = "";
@@ -152,10 +175,16 @@ Chat::GroupServerManagerI::GroupServerManagerI(const std::string& name) : manage
 Chat::GroupServerManagerI::CreateGroup(const ::std::string& name, // tu jest cos pomieszane, tworzymy grupe ale zwracamy cala liste grup. Chyba wiem!: tworzy jeden cat i go zwraca
                                        const Ice::Current& current)
 {
-	GroupServerPtr servant = new GroupServerI(name);
-	Chat::GroupServerPrx newGroup = GroupServerPrx::uncheckedCast(current.adapter->addWithUUID(servant));
-	groupsInManager.push_back(newGroup);
-    return newGroup;
+	if(this->getGroupServerByName(name, current) == 0)
+	{
+		GroupServerPtr servant = new GroupServerI(name);
+		Chat::GroupServerPrx newGroup = GroupServerPrx::uncheckedCast(current.adapter->addWithUUID(servant));
+		groupsInManager.push_back(newGroup);
+		return newGroup;
+	}else
+	{
+		throw NameAlreadyExists();
+	}
 }
 
 ::Chat::Groups
@@ -183,13 +212,19 @@ Chat::GroupServerManagerI::DeleteGroup(const ::std::string& name,
 Chat::GroupServerManagerI::getGroupServerByName(const ::std::string& name,
                                                 const Ice::Current& current)
 {
-	for(int i=0;i<groupsInManager.size();i++){
-		if(groupsInManager[i]->Name() == name)
-		{
-			return groupsInManager[i];
+	try
+	{
+		for(int i=0;i<groupsInManager.size();i++){
+			if(groupsInManager[i]->Name() == name)
+			{
+				return groupsInManager[i];
+			}
 		}
+	} catch(IceUtil::NullHandleException)
+	{
+		std::cout << "user sie pomylil" << std::endl;
 	}
-    return NULL;
+    return 0;
 }
 
 Chat::UserI::UserI(const ::std::string& name)

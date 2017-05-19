@@ -23,6 +23,7 @@ interface ChatServer {
 	void DeleteGroup(string name) throws NameDoesNotExist;
 	void registerServer(GroupServerManager* serverManager) throws ServerAlreadyRegistered;
 	void unregisterServer(GroupServerManager* serverManager) throws ServerDoesNotExist;
+	void LeaveChat(User* sender);
 	
 };
 

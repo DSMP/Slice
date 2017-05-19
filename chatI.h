@@ -37,6 +37,9 @@ public:
 
     virtual void unregisterServer(const ::Chat::GroupServerManagerPrx&,
                                   const Ice::Current&);
+
+    virtual void LeaveChat(const ::Chat::UserPrx&,
+    						const Ice::Current&);
 };
 
 class GroupServerI : virtual public GroupServer
@@ -44,7 +47,7 @@ class GroupServerI : virtual public GroupServer
 private: 
 	Users usersInGroup;
 	std::vector<std::string> textInChat;
-	int id=0;
+	int id;
 	std::string id_Name_Text;
 
 	std::string chatName;
